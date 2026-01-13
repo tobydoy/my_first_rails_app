@@ -1,0 +1,101 @@
+<%= form_with model: recommendation, local: true do |form| %>
+  <% if recommendation.errors.any? %>
+    <div class="error-messages">
+      <h3><%= pluralize(recommendation.errors.count, "error") %> prohibited this recommendation from being saved:</h3>
+      <ul>
+        <% recommendation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :title, "Title *" %>
+    <%= form.text_field :title, required: true, placeholder: "What are you recommending?", class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 5, placeholder: "Tell us more about this recommendation...", class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :recommendation_type, "Type *" %>
+    <%= form.select :recommendation_type,
+                    [['Evergreen (timeless products, books, etc.)', 'evergreen'],
+                     ['Time/Location Specific (events, restaurants, etc.)', 'time_location']],
+                    {}, { required: true, class: "form-control" } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :category, "Category *" %>
+    <%= form.text_field :category, required: true,
+                        placeholder: "e.g., Books, Electronics, Restaurants, Events",
+                        list: "categories", class: "form-control" %>
+    <datalist id="categories">
+      <option value="Books">
+      <option value="Electronics">
+      <option value="Fashion">
+      <option value="Restaurants">
+      <option value="Events">
+      <option value="Movies">
+      <option value="Music">
+      <option value="Travel">
+      <option value="Fitness">
+      <option value="Home">
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :product_url, "Product/Website URL" %>
+    <%= form.url_field :product_url, placeholder: "https://...", class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :affiliate_link, "Affiliate Link (optional)" %>
+    <%= form.url_field :affiliate_link, placeholder: "https://...", class: "form-control" %>
+    <small class="form-text">Earn commission when people buy through your link!</small>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :image_url, "Image URL" %>
+    <%= form.url_field :image_url, placeholder: "https://...", class: "form-control" %>
+  </div>
+
+  <div class="form-section">
+    <h3>Location & Event Information (Optional)</h3>
+
+    <div class="form-group">
+      <%= form.label :location_name, "Location Name" %>
+      <%= form.text_field :location_name, placeholder: "e.g., Central Park, New York", class: "form-control" %>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <%= form.label :latitude %>
+        <%= form.number_field :latitude, step: 0.000001, placeholder: "40.785091", class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :longitude %>
+        <%= form.number_field :longitude, step: 0.000001, placeholder: "-73.968285", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= form.check_box :is_event, class: "form-check-input" %>
+      <%= form.label :is_event, "This is an event", class: "form-check-label" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :event_date, "Event Date" %>
+      <%= form.datetime_local_field :event_date, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
+  </div>
+<% end %>

@@ -1,0 +1,51 @@
+<div class="recommendations-index">
+  <div class="page-header">
+    <h1>All Recommendations</h1>
+    <%= link_to "Create Recommendation", new_recommendation_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="search-bar">
+    <%= form_with url: recommendations_path, method: :get, local: true do |form| %>
+      <%= form.text_field :search, placeholder: "Search recommendations...", value: params[:search], class: "search-input" %>
+      <%= form.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+
+  <div class="filters">
+    <%= link_to "All", recommendations_path, class: "filter-btn #{params[:type].blank? ? 'active' : ''}" %>
+    <%= link_to "Evergreen", recommendations_path(type: 'evergreen'), class: "filter-btn #{params[:type] == 'evergreen' ? 'active' : ''}" %>
+    <%= link_to "Time/Location", recommendations_path(type: 'time_location'), class: "filter-btn #{params[:type] == 'time_location' ? 'active' : ''}" %>
+  </div>
+
+  <% if @recommendations.any? %>
+    <div class="recommendations-list">
+      <% @recommendations.each do |recommendation| %>
+        <div class="recommendation-item">
+          <div class="item-header">
+            <%= link_to recommendation.user.username, user_path(recommendation.user) %>
+            <span class="badge"><%= recommendation.recommendation_type.titleize %></span>
+          </div>
+
+          <h3><%= link_to recommendation.title, recommendation_path(recommendation) %></h3>
+
+          <% if recommendation.description.present? %>
+            <p><%= truncate(recommendation.description, length: 200) %></p>
+          <% end %>
+
+          <div class="item-footer">
+            <span>❤️ <%= recommendation.likes_count %></span>
+            <span>💬 <%= recommendation.comments_count %></span>
+            <% if recommendation.category.present? %>
+              <span class="category"><%= recommendation.category %></span>
+            <% end %>
+            <span class="timestamp"><%= time_ago_in_words(recommendation.created_at) %> ago</span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p>No recommendations found. <%= link_to "Create the first one!", new_recommendation_path %></p>
+    </div>
+  <% end %>
+</div>

@@ -1,4 +1,4 @@
-class CreateComments < ActiveRecord::Migration[5.2]
+class CreateComments < ActiveRecord::Migration[7.0]
   def change
     create_table :comments do |t|
       t.references :user, foreign_key: true, null: false

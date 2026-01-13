@@ -1,4 +1,4 @@
-class CreateRecommendations < ActiveRecord::Migration[5.2]
+class CreateRecommendations < ActiveRecord::Migration[7.0]
   def change
     create_table :recommendations do |t|
       t.references :user, foreign_key: true, null: false
@@ -25,7 +25,6 @@ class CreateRecommendations < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :recommendations, :user_id
     add_index :recommendations, :recommendation_type
     add_index :recommendations, :category
     add_index :recommendations, :created_at
