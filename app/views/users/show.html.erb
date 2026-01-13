@@ -1,0 +1,79 @@
+<div class="user-profile">
+  <div class="profile-header">
+    <div class="profile-info">
+      <% if @user.avatar_url.present? %>
+        <%= image_tag @user.avatar_url, alt: @user.username, class: "avatar" %>
+      <% else %>
+        <div class="avatar-placeholder"><%= @user.username[0].upcase %></div>
+      <% end %>
+
+      <div>
+        <h1><%= @user.username %></h1>
+        <% if @user.bio.present? %>
+          <p class="bio"><%= @user.bio %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat">
+        <strong><%= @user.recommendations.count %></strong>
+        <span>Recommendations</span>
+      </div>
+      <div class="stat">
+        <%= link_to followers_user_path(@user) do %>
+          <strong><%= @user.followers.count %></strong>
+          <span>Followers</span>
+        <% end %>
+      </div>
+      <div class="stat">
+        <%= link_to following_user_path(@user) do %>
+          <strong><%= @user.following.count %></strong>
+          <span>Following</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <% if @user == current_user %>
+        <%= link_to "Edit Profile", edit_user_path(@user), class: "btn btn-secondary" %>
+      <% else %>
+        <% if current_user.following?(@user) %>
+          <%= button_to "Unfollow", user_unfollow_path(@user), method: :delete, class: "btn btn-secondary" %>
+        <% else %>
+          <%= button_to "Follow", user_follow_path(@user), method: :post, class: "btn btn-primary" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="profile-recommendations">
+    <h2>Recommendations</h2>
+
+    <% if @recommendations.any? %>
+      <div class="recommendations-grid">
+        <% @recommendations.each do |recommendation| %>
+          <div class="recommendation-card">
+            <% if recommendation.image_url.present? %>
+              <%= image_tag recommendation.image_url, alt: recommendation.title %>
+            <% end %>
+
+            <h3><%= link_to recommendation.title, recommendation_path(recommendation) %></h3>
+
+            <div class="card-meta">
+              <span class="badge"><%= recommendation.recommendation_type.titleize %></span>
+              <span class="category"><%= recommendation.category %></span>
+            </div>
+
+            <div class="card-stats">
+              <span>❤️ <%= recommendation.likes_count %></span>
+              <span>💬 <%= recommendation.comments_count %></span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="empty-state">No recommendations yet.</p>
+    <% end %>
+  </div>
+</div>

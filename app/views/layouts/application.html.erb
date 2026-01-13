@@ -1,15 +1,54 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MyFirstRailsApp</title>
+    <title>Social Recommendations</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <header>
+      <nav class="navbar">
+        <div class="container">
+          <%= link_to "Social Recommendations", root_path, class: "navbar-brand" %>
+
+          <% if logged_in? %>
+            <ul class="nav-menu">
+              <li><%= link_to "Feed", feed_path %></li>
+              <li><%= link_to "Recommendations", recommendations_path %></li>
+              <li><%= link_to "New Recommendation", new_recommendation_path, class: "btn-primary" %></li>
+              <li><%= link_to current_user.username, user_path(current_user) %></li>
+              <li><%= button_to "Logout", logout_path, method: :delete, class: "btn-secondary" %></li>
+            </ul>
+          <% else %>
+            <ul class="nav-menu">
+              <li><%= link_to "Login", login_path, class: "btn-secondary" %></li>
+              <li><%= link_to "Sign Up", signup_path, class: "btn-primary" %></li>
+            </ul>
+          <% end %>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <% if flash[:notice] %>
+        <div class="alert alert-success"><%= flash[:notice] %></div>
+      <% end %>
+      <% if flash[:alert] %>
+        <div class="alert alert-danger"><%= flash[:alert] %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; <%= Time.current.year %> Social Recommendations. Share what you love!</p>
+      </div>
+    </footer>
   </body>
 </html>

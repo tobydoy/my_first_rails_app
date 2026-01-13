@@ -1,0 +1,37 @@
+<div class="users-list-container">
+  <h1><%= @user.username %>'s Following</h1>
+  <p class="back-link"><%= link_to "← Back to Profile", user_path(@user) %></p>
+
+  <% if @users.any? %>
+    <div class="users-grid">
+      <% @users.each do |user| %>
+        <div class="user-card">
+          <%= link_to user_path(user), class: "user-card-link" do %>
+            <% if user.avatar_url.present? %>
+              <%= image_tag user.avatar_url, alt: user.username, class: "user-avatar" %>
+            <% else %>
+              <div class="avatar-placeholder-small"><%= user.username[0].upcase %></div>
+            <% end %>
+
+            <div class="user-info">
+              <strong><%= user.username %></strong>
+              <% if user.bio.present? %>
+                <p><%= truncate(user.bio, length: 50) %></p>
+              <% end %>
+            </div>
+          <% end %>
+
+          <% if user != current_user %>
+            <% if current_user.following?(user) %>
+              <%= button_to "Unfollow", user_unfollow_path(user), method: :delete, class: "btn btn-sm btn-secondary" %>
+            <% else %>
+              <%= button_to "Follow", user_follow_path(user), method: :post, class: "btn btn-sm btn-primary" %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="empty-state">Not following anyone yet.</p>
+  <% end %>
+</div>

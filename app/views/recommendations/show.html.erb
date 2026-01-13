@@ -1,0 +1,91 @@
+<div class="recommendation-show">
+  <div class="recommendation-header">
+    <div class="author-info">
+      <%= link_to @recommendation.user.username, user_path(@recommendation.user), class: "author-name" %>
+      <span class="timestamp"><%= @recommendation.created_at.strftime("%B %d, %Y") %></span>
+    </div>
+
+    <% if @recommendation.user == current_user %>
+      <div class="actions">
+        <%= link_to "Edit", edit_recommendation_path(@recommendation), class: "btn btn-secondary" %>
+        <%= button_to "Delete", recommendation_path(@recommendation), method: :delete,
+                      data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @recommendation.image_url.present? %>
+    <div class="recommendation-image">
+      <%= image_tag @recommendation.image_url, alt: @recommendation.title %>
+    </div>
+  <% end %>
+
+  <h1><%= @recommendation.title %></h1>
+
+  <div class="recommendation-meta">
+    <span class="badge badge-<%= @recommendation.recommendation_type %>">
+      <%= @recommendation.recommendation_type.titleize %>
+    </span>
+    <% if @recommendation.category.present? %>
+      <span class="category-badge"><%= @recommendation.category %></span>
+    <% end %>
+    <% if @recommendation.is_event %>
+      <span class="event-badge">
+        📅 Event
+        <% if @recommendation.event_date.present? %>
+          - <%= @recommendation.event_date.strftime("%B %d, %Y") %>
+        <% end %>
+      </span>
+    <% end %>
+    <% if @recommendation.location_name.present? %>
+      <span class="location-badge">📍 <%= @recommendation.location_name %></span>
+    <% end %>
+  </div>
+
+  <% if @recommendation.description.present? %>
+    <div class="recommendation-description">
+      <%= simple_format(@recommendation.description) %>
+    </div>
+  <% end %>
+
+  <% if @recommendation.product_url.present? %>
+    <div class="product-link">
+      <%= link_to "View Product", @recommendation.product_url, target: "_blank", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <div class="recommendation-actions">
+    <%= button_to recommendation_like_path(@recommendation), method: :post, class: "action-btn #{'liked' if @recommendation.liked_by?(current_user)}" do %>
+      <%= @recommendation.liked_by?(current_user) ? "❤️" : "🤍" %> Like
+      (<%= @recommendation.likes_count %>)
+    <% end %>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h3>Comments (<%= @comments.count %>)</h3>
+
+    <%= form_with model: @comment, url: recommendation_comments_path(@recommendation), local: true do |form| %>
+      <div class="comment-form">
+        <%= form.text_area :content, placeholder: "Add a comment...", rows: 3, class: "form-control" %>
+        <%= form.submit "Post Comment", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+
+    <div class="comments-list">
+      <% @comments.each do |comment| %>
+        <div class="comment">
+          <div class="comment-header">
+            <%= link_to comment.user.username, user_path(comment.user), class: "comment-author" %>
+            <span class="comment-time"><%= time_ago_in_words(comment.created_at) %> ago</span>
+            <% if comment.user == current_user %>
+              <%= button_to "Delete", recommendation_comment_path(@recommendation, comment),
+                            method: :delete, class: "btn-link-danger" %>
+            <% end %>
+          </div>
+          <p class="comment-content"><%= comment.content %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

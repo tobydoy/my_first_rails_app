@@ -1,0 +1,24 @@
+<div class="auth-container">
+  <h1>Log In</h1>
+  <p>Welcome back! Log in to see your feed.</p>
+
+  <%= form_with url: login_path, local: true do |form| %>
+    <div class="form-group">
+      <%= form.label :email %>
+      <%= form.email_field :email, required: true, placeholder: "your@email.com", class: "form-control", autofocus: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :password %>
+      <%= form.password_field :password, required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit "Log In", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <p class="auth-link">
+    Don't have an account? <%= link_to "Sign up here", signup_path %>
+  </p>
+</div>

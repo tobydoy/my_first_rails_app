@@ -1,0 +1,76 @@
+<div class="feed-container">
+  <h1>Your Feed</h1>
+
+  <div class="feed-filters">
+    <% if @categories.any? %>
+      <div class="category-filters">
+        <%= link_to "All", feed_path, class: "filter-btn" %>
+        <% @categories.each do |category| %>
+          <%= link_to category, feed_path(category: category), class: "filter-btn" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @recommendations.any? %>
+    <div class="recommendations-grid">
+      <% @recommendations.each do |recommendation| %>
+        <div class="recommendation-card">
+          <div class="card-header">
+            <%= link_to recommendation.user.username, user_path(recommendation.user), class: "user-link" %>
+            <span class="timestamp"><%= time_ago_in_words(recommendation.created_at) %> ago</span>
+          </div>
+
+          <% if recommendation.image_url.present? %>
+            <div class="card-image">
+              <%= image_tag recommendation.image_url, alt: recommendation.title %>
+            </div>
+          <% end %>
+
+          <div class="card-body">
+            <h3><%= link_to recommendation.title, recommendation_path(recommendation) %></h3>
+
+            <div class="card-meta">
+              <span class="badge badge-<%= recommendation.recommendation_type %>">
+                <%= recommendation.recommendation_type.titleize %>
+              </span>
+              <% if recommendation.category.present? %>
+                <span class="category-badge"><%= recommendation.category %></span>
+              <% end %>
+              <% if recommendation.is_event %>
+                <span class="event-badge">📅 Event</span>
+              <% end %>
+              <% if recommendation.location_name.present? %>
+                <span class="location-badge">📍 <%= recommendation.location_name %></span>
+              <% end %>
+            </div>
+
+            <% if recommendation.description.present? %>
+              <p class="description"><%= truncate(recommendation.description, length: 150) %></p>
+            <% end %>
+
+            <div class="card-actions">
+              <%= button_to recommendation_like_path(recommendation), method: :post, class: "action-btn" do %>
+                <%= recommendation.liked_by?(current_user) ? "❤️" : "🤍" %>
+                <span><%= recommendation.likes_count %></span>
+              <% end %>
+
+              <%= link_to recommendation_path(recommendation), class: "action-btn" do %>
+                💬 <span><%= recommendation.comments_count %></span>
+              <% end %>
+
+              <% if recommendation.product_url.present? %>
+                <%= link_to "View Product", recommendation.product_url, target: "_blank", class: "btn-link" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <h2>Your feed is empty!</h2>
+      <p>Follow some users or check out <%= link_to "all recommendations", recommendations_path %> to get started.</p>
+    </div>
+  <% end %>
+</div>
